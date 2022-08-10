@@ -23,20 +23,25 @@ class Miner:
         topmost_block = get_blockchain().get_topmost_block()
         assert isinstance(topmost_block, Block)
         hash_prev = topmost_block.get_hash()
-        txs = get_mempool().tx
+        mempool = get_mempool()
+        txs = mempool.tx[0:3]
         for i in txs:
             assert isinstance(i, Transaction) or isinstance(i, Coinbase)
             if not i.is_valid():
                 txs.remove(i)
+
         coinbase = Coinbase(self.public_key)
-        txs.insert(0, coinbase)
-        while True:
-            block = Block(hash_prev, txs, random.randint(0, 9999999999999999999999999999))
-            hash = block.get_hash()
-            check = self.check_agains_target(hash)
-            if check:
-                #FOUND NEW BLOCK; COINBASE$$$$
-                success = get_blockchain().insert_block(block)
-                if success:
-                    print(get_blockchain().get_json())
-                break
+        if coinbase.get_hash() not in list(map(lambda x: x.get_hash(), txs)):
+            txs.insert(0, coinbase)
+
+        block = Block(hash_prev, txs, random.randint(0, 9999999999999999999999999999))
+        hash = block.get_hash()
+        check = self.check_agains_target(hash)
+        if check:
+            #FOUND NEW BLOCK; COINBASE$$$$
+            success = get_blockchain().insert_block(block)
+            if success:
+                mempool.clear_n_transactions(3)
+                # print(mempool.get_mempool())
+                print(get_blockchain().get_json())
+

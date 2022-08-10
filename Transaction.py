@@ -27,8 +27,13 @@ class Transaction:
         data = {
             "utxos": utxos_json,
             "receiver_public_keys": self.receiver_public_keys,
-            "messages": self.messages
+            "messages": self.messages,
         }
+        return data
+
+    def get_full_dict(self):
+        data = self.get_dict()
+        data["signature"] = self.signature
         return data
 
     def get_json(self):
@@ -50,7 +55,7 @@ class Transaction:
         balance = 0
         for utxo in self.utxos:
             balance = balance + utxo.message
-        amount_enough = balance == spent
+        amount_enough = balance >= spent
         return signature_valid and amount_enough
 
 class UnsignedTransaction:
@@ -75,7 +80,7 @@ class UnsignedTransaction:
         data = {
             "utxos": utxos_json,
             "receiver_public_keys": self.receiver_public_keys,
-            "messages": self.messages
+            "messages": self.messages,
         }
         return data
 

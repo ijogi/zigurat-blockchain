@@ -31,6 +31,7 @@ class Blockchain:
         if not self.check_agains_target(block.get_hash()):
             return False
         self.blocks.append(block)
+        self.write_to_blockchain()
         return True
 
     def check_agains_target(self, hash_string):
@@ -85,3 +86,7 @@ class Blockchain:
         return json.dumps({
             "blocks": blocks
         })
+
+    def write_to_blockchain(self):
+        with open("blockchain.json", "w") as save_file:
+            save_file.write(self.get_json())
