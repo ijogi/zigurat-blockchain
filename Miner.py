@@ -14,7 +14,6 @@ class Miner:
 
     def check_agains_target(self, hash_string):
         hex = hashing.string_to_hex(hash_string)
-        print(hex)
         for i in range(1, mining_target+1):
             if not hex[i] == "0":
                 return False
@@ -24,7 +23,6 @@ class Miner:
         mempool = get_mempool()
         txs = mempool.tx
         if len(txs) > 0:
-            print("yes")
             topmost_block = get_blockchain().get_topmost_block()
             assert isinstance(topmost_block, Block)
             hash_prev = topmost_block.get_hash()
@@ -41,15 +39,12 @@ class Miner:
             block = Block(hash_prev, txs, nonce)
             hash = block.get_hash()
             check = self.check_agains_target(hash)
-            print(hash)
             
             if check:
-                print("double yes")
                 #FOUND NEW BLOCK; COINBASE$$$$
                 success = get_blockchain().insert_block(block)
                 if success:
-                    print("triple yes")
                     mempool.clear_n_transactions(len(txs))
-                    # print(get_blockchain().get_json())
+                    print(get_blockchain().get_json())
 
 

@@ -6,7 +6,6 @@ from CONFIG import mining_target
 from Genesis import genesis_coinbase
 from Transaction import Coinbase, Transaction
 from UTXO import UTXO
-from Mempool import get_mempool
 
 the_blockchain = None
 
@@ -24,6 +23,7 @@ class Blockchain:
                              [genesis_coinbase()], 0)]
 
     def insert_block(self, block):
+        print(block.transactions)
         if not isinstance(block, Block):
             return False
         for tx in block.transactions:
@@ -32,7 +32,6 @@ class Blockchain:
             if isinstance(tx, Transaction):
                 for utxo in tx.utxos:
                     if not self.is_valid_UTXO(utxo):
-                        print("ERROR")
                         return False
         if not self.check_agains_target(block.get_hash()):
             return False
@@ -69,6 +68,7 @@ class Blockchain:
         blocks = self.blocks
         #find possible UTXO on Blockchain
         for block in blocks:
+            # for tx in block["transactions"]:
             for tx in block.transactions:
                 if tx.get_hash() == UTXO.tx_hash:
                     counter = 0
@@ -82,6 +82,7 @@ class Blockchain:
         #check double_spending
         for block in blocks:
             for tx in block.transactions:
+            # for tx in block["transactions"]:
                 if isinstance(tx, Transaction):
                     for tx_utxo in tx.utxos:
                         if tx_utxo.get_hash() != UTXO.get_hash():
@@ -114,6 +115,8 @@ class Blockchain:
             return self.blocks
 
     def serialize_transactions(self, txs):
+        if len(txs) < 1:
+            return []
         genesis_tx = [Coinbase(txs[0]['receiver_public_keys'][0])]
         processed_txs = list(map(lambda x: Transaction(
                         utxos=list(map(lambda u: UTXO(
@@ -121,9 +124,8 @@ class Blockchain:
                             public_key=u["public_key"],
                             message=u["message"],
                         ),x["utxos"] if "utxos" in x else [])),
-                        receiver_public_keys=x["receiver_public_keys"],
+                        receiver_public_keys=x["receiver_public_keys"] if "receiver_public_keys" in x else [],
                         messages=x["messages"] if "messages" in x else [],
                         signature=x["signature"] if "signature" in x else "",
                     ), txs[1:]))
-        # print(list(map(lambda x: x, txs[1:]['transactions'])))
         return genesis_tx + processed_txs

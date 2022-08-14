@@ -26,7 +26,7 @@ def send():
     try:
       wallet = Wallet()
       wallet.send_money([wallet.public_key], [data['amount']])
-      return get_blockchain().get_json()
+      return get_blockchain().get_topmost_block().get_dict()
     except Exception as e:
       print(e)
       return repr(e)

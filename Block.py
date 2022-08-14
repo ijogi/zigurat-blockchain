@@ -20,12 +20,12 @@ class Block:
 
         return {
             "transaction_hashes": transaction_hash_list,
-        #    "transactions": list(map(lambda x: {
-        #         "utxos": x["utxos"] if "utxos" in x else [],
-        #         "receiver_public_keys": x["receiver_public_keys"],
-        #         "messages": x["messages"],
-        #         "signature": x["signature"] if "signature" in x else "",
-        #     }, list(map(lambda x: x.get_dict(), self.transactions)))),
+           "transactions": list(map(lambda x: {
+                "utxos": x["utxos"] if "utxos" in x else [],
+                "receiver_public_keys": x["receiver_public_keys"],
+                "messages": x["messages"],
+                "signature": x["signature"] if "signature" in x else "",
+            }, list(map(lambda x: x.get_dict(), self.transactions)))),
             "hash_previous_block": self.hash_previous_block,
             "nonce": self.nonce
         }
