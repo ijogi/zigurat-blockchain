@@ -10,7 +10,7 @@ def get_mempool():
     global the_mempool
     if the_mempool == None:
         the_mempool = Mempool()
-    # the_mempool.tx = the_mempool.get_mempool_txs()
+    the_mempool.tx = the_mempool.get_mempool_txs()
     return the_mempool
 
 
@@ -30,6 +30,7 @@ class Mempool:
             if len(self.tx) > 0:
                 self.tx.pop(0)
                 self.write_to_mempool()
+                self.tx = self.get_mempool_txs()
 
     def write_to_mempool(self):
         with open("mempool.json", "w") as save_file:

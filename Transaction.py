@@ -56,7 +56,10 @@ class Transaction:
         for utxo in self.utxos:
             balance = balance + utxo.message
         amount_enough = balance >= spent
+        # print('AMOUNT ENOUGH', amount_enough)
+        # print("SINGATURE IS VALID", signature_valid)
         return signature_valid and amount_enough
+        # return amount_enough
 
 class UnsignedTransaction:
     def __init__(self, utxos, receiver_public_keys, messages):
