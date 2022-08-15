@@ -23,7 +23,6 @@ class Blockchain:
                              [genesis_coinbase()], 0)]
 
     def insert_block(self, block):
-        print(block.transactions)
         if not isinstance(block, Block):
             return False
         for tx in block.transactions:
