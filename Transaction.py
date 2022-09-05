@@ -7,6 +7,7 @@ class Coinbase:
     def __init__(self, receiver):
         self.receiver_public_keys = [receiver]
         self.messages = [50]
+        self.type = 'coinbase'
 
     def get_hash(self):
         return hashing.hash(self.get_json())
@@ -38,6 +39,7 @@ class UnsignedTransaction(Coinbase):
         self.utxos = utxos
         self.receiver_public_keys = receiver_public_keys
         self.messages = messages
+        self.type = 'unsignedtx'
 
     def get_dict(self):
         utxos_json = []
@@ -66,6 +68,7 @@ class Transaction(UnsignedTransaction):
             assert i.public_key == utxos[0].public_key
         UnsignedTransaction.__init__(self, utxos, receiver_public_keys, messages)
         self.signature = signature
+        self.type = 'transaction'
         assert self.is_valid()
 
     def get_dict(self):

@@ -1,7 +1,7 @@
 import json
 import os
+import utilities
 from Transaction import Transaction
-from UTXO import UTXO
 
 the_mempool = None
 
@@ -26,7 +26,7 @@ class Mempool:
         self.write_to_mempool()
 
     def clear_n_transactions(self, n):
-        for i in range(n):
+        for _ in range(n):
             if len(self.tx) > 0:
                 self.tx.pop(0)
                 self.write_to_mempool()
@@ -36,17 +36,12 @@ class Mempool:
         with open("mempool.json", "w") as save_file:
             if len(self.tx) > 0:
                 save_file.write(json.dumps({
-                    "txs": list(map(lambda x: x.get_full_dict(), self.tx)),
+                    "txs": list(map(lambda x: x.get_dict(), self.tx)),
                 }))
 
     def get_mempool_txs(self):
         with open("mempool.json", "r") as save_file:
             if os.stat("mempool.json").st_size != 0:
                 mempool = json.load(save_file)
-                return list(map(lambda x: Transaction(
-                    utxos=list(map(lambda u: UTXO(u["tx_hash"], u["public_key"], u["message"]), x["utxos"])),
-                    receiver_public_keys=x["receiver_public_keys"],
-                    messages=x["messages"],
-                    signature=x["signature"],
-                ), mempool["txs"]))
+                return utilities.serialize_transactions(mempool["txs"])
             return []

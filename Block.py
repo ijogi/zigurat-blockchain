@@ -7,19 +7,19 @@ class Block:
         self.transactions = transactions
         self.hash_previous_block = hash_previous_block
         self.nonce = nonce
+        self.transaction_hashes = self.get_transaction_hashes()
 
     def get_hash(self):
         data = self.get_dict()
         json_data = json.dumps(data)
         return hashing.hash(json_data)
 
-    def get_dict(self):
-        transaction_hash_list = []
-        for i in self.transactions:
-            transaction_hash_list.append(i.get_hash())
+    def get_transaction_hashes(self):
+        return [x.get_hash() for x in self.transactions]
 
+    def get_dict(self):
         return {
-            "transaction_hashes": transaction_hash_list,
+           "transaction_hashes": self.get_transaction_hashes(),
            "transactions": list(map(lambda x: {
                 "utxos": x["utxos"] if "utxos" in x else [],
                 "receiver_public_keys": x["receiver_public_keys"],

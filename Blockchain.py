@@ -1,10 +1,11 @@
 import json
 import os
 import hashing
+import utilities
 from Block import Block
 from CONFIG import mining_target
 from Genesis import genesis_coinbase
-from Transaction import Coinbase, Transaction
+from Transaction import Transaction
 from UTXO import UTXO
 
 the_blockchain = None
@@ -13,14 +14,16 @@ the_blockchain = None
 def get_blockchain():
     global the_blockchain
     if the_blockchain == None:
-        the_blockchain = Blockchain()
+        the_blockchain = Blockchain([])
+        # Can be used to initialize the blockchains from the JSON file
+        # the_blockchain.read_from_blockchain()
     return the_blockchain
 
 
 class Blockchain:
-    def __init__(self):
-        self.blocks = [Block("ZEvMflZDcwQJmarInnYi88px+6HZcv2Uoxw7+/JOOTg=",
-                             [genesis_coinbase()], 0)]
+    def __init__(self, blocks):
+        self.blocks = blocks if len(blocks) > 1 else [Block("ZEvMflZDcwQJmarInnYi88px+6HZcv2Uoxw7+/JOOTg=",
+                                                            [genesis_coinbase()], 0)]
 
     def insert_block(self, block):
         if not isinstance(block, Block):
@@ -81,7 +84,6 @@ class Blockchain:
         #check double_spending
         for block in blocks:
             for tx in block.transactions:
-            # for tx in block["transactions"]:
                 if isinstance(tx, Transaction):
                     for tx_utxo in tx.utxos:
                         if tx_utxo.get_hash() != UTXO.get_hash():
@@ -90,12 +92,7 @@ class Blockchain:
         return True
 
     def get_json(self):
-        blocks = []
-        for i in self.blocks:
-            blocks.append(i.get_dict())
-        return json.dumps({
-            "blocks": blocks
-        })
+        return json.dumps({"blocks": [block.get_dict() for block in self.blocks]})
 
     def write_to_blockchain(self):
         with open("blockchain.json", "w") as save_file:
@@ -105,26 +102,10 @@ class Blockchain:
         with open("blockchain.json", "r") as save_file:
             if os.stat("blockchain.json").st_size != 0:
                 blocks = json.load(save_file)
-                return list(map(lambda x: {
-                    "transaction_hashes": x["transaction_hashes"],
-                    "hash_previous_block": x["hash_previous_block"],
-                    "nonce": x["nonce"],
-                    "transactions": self.serialize_transactions(x["transactions"] if "transactions" in x else []),
-                }, blocks["blocks"]))
-            return self.blocks
-
-    def serialize_transactions(self, txs):
-        if len(txs) < 1:
-            return []
-        genesis_tx = [Coinbase(txs[0]['receiver_public_keys'][0])]
-        processed_txs = list(map(lambda x: Transaction(
-                        utxos=list(map(lambda u: UTXO(
-                            tx_hash=u["tx_hash"],
-                            public_key=u["public_key"],
-                            message=u["message"],
-                        ),x["utxos"] if "utxos" in x else [])),
-                        receiver_public_keys=x["receiver_public_keys"] if "receiver_public_keys" in x else [],
-                        messages=x["messages"] if "messages" in x else [],
-                        signature=x["signature"] if "signature" in x else "",
-                    ), txs[1:]))
-        return genesis_tx + processed_txs
+                self.blocks = [
+                    Block(
+                        hash_previous_block=x["hash_previous_block"],
+                        nonce=x["nonce"],
+                        transactions=utilities.serialize_transactions(x["transactions"] if "transactions" in x else []),
+                    ) for x in blocks["blocks"]
+                ]
