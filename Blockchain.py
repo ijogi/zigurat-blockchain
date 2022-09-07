@@ -16,7 +16,7 @@ def get_blockchain():
     if the_blockchain == None:
         the_blockchain = Blockchain([])
         # Can be used to initialize the blockchains from the JSON file
-        # the_blockchain.read_from_blockchain()
+        the_blockchain.read_from_blockchain()
     return the_blockchain
 
 

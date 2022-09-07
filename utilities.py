@@ -10,8 +10,8 @@ def serialize_utxo(utxo):
   )
 
 def serialize_transaction(tx):
-    if "utxos" in tx:
-        if "signature" in tx:
+    if "utxos" in tx and len(tx["utxos"]) > 0:
+        if "signature" in tx and len(tx["signature"]) > 0:
             return Transaction(
                 utxos=list(map(lambda u: serialize_utxo(u), tx["utxos"] if "utxos" in tx else [])),
                 receiver_public_keys=tx["receiver_public_keys"] if "receiver_public_keys" in tx else [],
