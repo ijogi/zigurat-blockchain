@@ -90,6 +90,27 @@ def getTx(blockhash,txhash):
       return repr(e)
   return "Wrong HTTP method"
 
+
+@app.route('/wallet/<public_key>')
+def get_balance(public_key):
+  print(public_key)
+  balance = 0
+
+  try:
+    with open("blockchain.json", "r") as save_file:    
+      data = json.load(save_file)
+      print(len(data["blocks"]))
+
+      for block in data["blocks"]:
+        for transaction in block['transactions']:
+          for utxo in transaction['utxos']:
+            if public_key in utxo['public_key']:
+              balance += utxo['message']
+  except: raise Exception('The blockchain does not exsist yet, you dumm fuck') 
+  return str(balance)
+
+
+
 def init_server():
   logging.basicConfig(level=logging.INFO)
   logging.info("Team 4 Blockchain starting up")
@@ -102,4 +123,6 @@ if __name__ == '__main__':
   init_server()
   app.run(host='0.0.0.0', port=8100, threaded=True, debug=True, use_reloader=False)
   
+
+
   
