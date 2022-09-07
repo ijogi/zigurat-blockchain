@@ -50,7 +50,7 @@ class Miner:
             
             if check:
                 #FOUND NEW BLOCK; COINBASE$$$$
-                self.log.info("Found new Block")
+                self.log.info("Found new Block. Hash=%s", block.get_hash())
                 success = get_blockchain().insert_block(block)
                 if success:
                     self.log.info("Block with %s tx successfully inserted", len(txs))
