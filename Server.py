@@ -30,7 +30,7 @@ def send():
       result = json.dumps(get_blockchain().get_topmost_block().get_dict())
       return Response(result, mimetype='text/json')
     except Exception as e:
-      print(e)
+      logging.error(e,exc_info=True)
       return repr(e)
   return "Wrong HTTP method"
 
