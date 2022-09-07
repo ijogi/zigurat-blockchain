@@ -1,6 +1,7 @@
 import flask
 import logging
-from flask import request
+import json
+from flask import request, Response
 from multiprocessing import Process
 from Blockchain import get_blockchain
 
@@ -26,9 +27,34 @@ def send():
     try:
       wallet = Wallet()
       wallet.send_money([wallet.public_key], [data['amount']])
-      return get_blockchain().get_topmost_block().get_dict()
+      result = json.dumps(get_blockchain().get_topmost_block().get_dict())
+      return Response(result, mimetype='text/json')
     except Exception as e:
       print(e)
+      return repr(e)
+  return "Wrong HTTP method"
+
+@app.route('/block', methods=['GET'])
+def getBlocks():
+  if request.method == 'GET':
+    try:
+      return Response(get_blockchain().get_blockhashes_json(), mimetype='text/json')
+    except Exception as e:
+      logging.error(e,exc_info=True)
+      return repr(e)
+  return "Wrong HTTP method"
+
+@app.route('/block/<blockhash>', methods=['GET'])
+def getBlock(blockhash):
+  if request.method == 'GET':
+    try:
+      block = get_blockchain().get_block_by_hash(blockhash)
+      if block == None:
+        return repr("Error: No block found with this hash")
+      else:
+        return Response(block.get_dict(), mimetype='text/json')
+    except Exception as e:
+      logging.error(e,exc_info=True)
       return repr(e)
   return "Wrong HTTP method"
 

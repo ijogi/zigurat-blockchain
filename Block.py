@@ -12,7 +12,8 @@ class Block:
     def get_hash(self):
         data = self.get_dict()
         json_data = json.dumps(data)
-        return hashing.hash(json_data)
+        hash = hashing.hash(json_data)
+        return hash
 
     def get_transaction_hashes(self):
         return [x.get_hash() for x in self.transactions]

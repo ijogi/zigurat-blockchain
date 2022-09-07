@@ -13,10 +13,11 @@ the_blockchain = None
 
 def get_blockchain():
     global the_blockchain
-    if the_blockchain == None:
-        the_blockchain = Blockchain([])
-        # Can be used to initialize the blockchains from the JSON file
-        the_blockchain.read_from_blockchain()
+    # This is commented out because we should always read from file, as we cannot trust the memory in Multiprocess-Environment
+    # if the_blockchain == None:
+    the_blockchain = Blockchain([])
+    # Can be used to initialize the blockchains from the JSON file
+    the_blockchain.read_from_blockchain()
     return the_blockchain
 
 
@@ -94,6 +95,14 @@ class Blockchain:
     def get_json(self):
         return json.dumps({"blocks": [block.get_dict() for block in self.blocks]})
 
+    def get_blockhashes_json(self):
+        return json.dumps({"blocks": [block.get_hash() for block in self.blocks]})
+
+    def get_block_by_hash(self, hash):
+        for block in self.blocks:
+            if block.get_hash() == hash:
+                return block
+                
     def write_to_blockchain(self):
         with open("blockchain.json", "w") as save_file:
             save_file.write(self.get_json())
