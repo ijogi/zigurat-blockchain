@@ -52,7 +52,7 @@ def getBlock(blockhash):
       if block == None:
         return repr("Error: No block found with this hash")
       else:
-        return Response(block.get_dict(), mimetype='text/json')
+        return Response(json.dumps(block.get_dict()), mimetype='text/json')
     except Exception as e:
       logging.error(e,exc_info=True)
       return repr(e)
