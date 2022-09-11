@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dummy Wallet UI</title> #https://www.digitalocean.com/community/tutorials/how-to-use-templates-in-a-flask-application
+</head>
+<body>
+    <form action = "/send" method="POST">
+        <p> Please enter a public address and amount of BTC</p>
+        <input type="text" placeholder="Public Address" name="address">
+        <input type="number" placeholder="Amount of BTC" name="amount">
+        <input type = "submit" value = "Go">
+    </form>
+
+
+    <h2>BLOCK EXPLORER</h2>
+    <p>
+        {{blocks_to_return}}
+    </p>
+</body>
+</html>

@@ -1,7 +1,7 @@
 import flask
 import logging
 import json
-from flask import request, Response
+from flask import request, Response, render_template
 from multiprocessing import Process
 from Blockchain import get_blockchain
 
@@ -20,13 +20,16 @@ app = flask.Flask(__name__)
 #     return "Mining"
 #   return "Wrong HTTP method"
 
+@app.route('/')
+def start():
+  return render_template('WalletUIDummy.html')
+
 @app.route('/send', methods=['POST'])
 def send():
   if request.method == 'POST':
-    data = request.get_json(silent=True)
     try:
       wallet = Wallet()
-      wallet.send_money([wallet.public_key], [data['amount']])
+      wallet.send_money([wallet.public_key], [int(request.form['amount'])])
       result = json.dumps(get_blockchain().get_topmost_block().get_dict())
       return Response(result, mimetype='text/json')
     except Exception as e:
