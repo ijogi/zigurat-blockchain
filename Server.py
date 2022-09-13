@@ -109,7 +109,7 @@ def get_balance(public_key):
           for utxo in transaction['utxos']:
             if public_key in utxo['public_key']:
               balance += utxo['message']
-  except: raise Exception('The blockchain does not exsist yet, you dumm fuck') 
+  except: raise Exception('The blockchain does not exsist yet')
   return str(balance)
 
 
