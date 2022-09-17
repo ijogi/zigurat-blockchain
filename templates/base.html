@@ -24,8 +24,14 @@
 
 
             <div class="your-balance">
-                <h2>Balance:</h2>
-
+                <h2>Search a block for transactions</h2>
+                <form action="transaction_search_from_blockhash" methods = "GET">
+                    <div>
+                        <input class="block-hash-input" type="text" name="blockhash" required="">
+                        <input type = "Submit">
+                        <label class="block-hash-label">Block Hash</label>
+                    </div>
+                </form>
             </div>
 
             <form action = "blocktxsearch" method = "GET">
@@ -45,12 +51,11 @@
             </form>
 
             <form action ="blockhashsearch" method="GET">
-                <br>
-                <br>
+
                 <div class="left-corner" style="float:left;"> <!-- CENTRAL BOX -->
                     <div class="Trxx-box">
-                        <br>
-                        <br>
+
+
                         <input class="block" type="text" name="blockhash" required="">
                         <label class="block">Search for a block hash</label>
                         <input type="Submit">
@@ -87,9 +92,10 @@
                 <div class="Trx-box">
                     <input type="number" name="amount_to_send" required="">
                     <label>Amount</label>
+                    <input type = "Submit">
                 </div>
 
-                <input type = "submit" value = "Go">
+
 
 
             </form>

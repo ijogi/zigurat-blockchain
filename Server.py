@@ -35,7 +35,7 @@ def send():
       result = json.dumps(get_blockchain().get_topmost_block().get_dict())
       #return Response(result, mimetype='text/json')
 
-      return render_template('send.html',response = Response(result, mimetype='text/json'))
+      return render_template('send.html',response = "Success! Transaction included in this block: ", block_incl = result)
     except Exception as e:
       logging.error(e,exc_info=True)
       return repr(e)
@@ -76,7 +76,8 @@ def getTxs():
       if block == None:
         return repr("Error: No block found with this hash")
       else:
-        return Response(json.dumps(block.get_transactions()), mimetype='text/json')
+        return render_template('searchblocktransactions.html', response = "Here are your transactions", transactions = block.get_transactions())
+
     except Exception as e:
       logging.error(e,exc_info=True)
       return repr(e)

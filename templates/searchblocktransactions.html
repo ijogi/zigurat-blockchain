@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Block Explorer</title>
+    <title>Block Search</title>
     <link rel="stylesheet" type="text/css" href="static/styles/style.css">
 </head>
 <body>
-    <h2 class = "title" style="text-align: center;">BLOCK EXPLORER</h2>
+    <h2 style="text-align: center;">{{response}}</h2>
     <ol class = "center">
-    {% for hash in returned_blockhashes['blocks'] %}
+    {% for tx in transactions['transactions'] %}
 
-        <li style="text-align: center;">{{hash}}</li>
+        <li style="text-align: center;">{{tx}}</li>
 
     {% endfor %}
     </ol>

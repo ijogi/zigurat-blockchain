@@ -19,17 +19,37 @@ html {
     background: linear-gradient(#141e30, #243b55);
   }
 
-  h2.title {
-    color:#03e9f4;
-  }
+
 
   .label {
     color: white;
     padding: 8px;
   }
 
+h2{
+    color: #03e9f4;
+}
 
+h3 {
+    color:white;
+}
 
+p {
+    color: white;
+}
+
+center {
+    text-align: center;
+    list-style-position: inside;
+
+}
+label {
+    color: white;
+}
+li {
+    color: white;
+
+}
   
 .public-key-box{
 
