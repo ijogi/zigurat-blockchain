@@ -22,49 +22,56 @@ app = flask.Flask(__name__)
 
 @app.route('/')
 def start():
-  return render_template('WalletUIDummy.html')
+  return render_template('base.html')
 
-@app.route('/send', methods=['POST'])
+@app.route('/send', methods=['POST']) #DONE
 def send():
   if request.method == 'POST':
     try:
       wallet = Wallet()
-      wallet.send_money([wallet.public_key], [int(request.form['amount'])])
+      public_key = request.args.get('receiver_public_key')
+      print(public_key)
+      wallet.send_money([public_key], [int(request.form['amount_to_send'])])
       result = json.dumps(get_blockchain().get_topmost_block().get_dict())
-      return Response(result, mimetype='text/json')
+      #return Response(result, mimetype='text/json')
+
+      return render_template('send.html',response = Response(result, mimetype='text/json'))
     except Exception as e:
       logging.error(e,exc_info=True)
       return repr(e)
   return "Wrong HTTP method"
 
-@app.route('/block', methods=['GET'])
+@app.route('/block', methods=['GET']) #DONE -> Add a button for block explorer
 def getBlocks():
   if request.method == 'GET':
     try:
-      return Response(get_blockchain().get_blockhashes_json(), mimetype='text/json')
+      response = get_blockchain().get_blockhashes_json()
+      return render_template('BlockExplorer.html', returned_blockhashes=response)
     except Exception as e:
       logging.error(e,exc_info=True)
       return repr(e)
   return "Wrong HTTP method"
 
-@app.route('/block/<blockhash>', methods=['GET'])
-def getBlock(blockhash):
+@app.route('/blockhashsearch', methods=['GET']) # DONE
+def getBlock():
   if request.method == 'GET':
     try:
+      blockhash = request.args.get('blockhash')
       block = get_blockchain().get_block_by_hash(blockhash)
       if block == None:
         return repr("Error: No block found with this hash")
       else:
-        return Response(json.dumps(block.get_dict()), mimetype='text/json')
+        return render_template('blocksearch.html',response = json.dumps(block.get_dict()), mimetype='text/json')
     except Exception as e:
       logging.error(e,exc_info=True)
       return repr(e)
   return "Wrong HTTP method"
 
-@app.route('/block/<blockhash>/tx', methods=['GET'])
-def getTxs(blockhash):
+@app.route('/transaction_search_from_blockhash', methods=['GET']) #DONE
+def getTxs():
   if request.method == 'GET':
     try:
+      blockhash = request.args.get('blockhash')
       block = get_blockchain().get_block_by_hash(blockhash)
       if block == None:
         return repr("Error: No block found with this hash")
@@ -75,31 +82,34 @@ def getTxs(blockhash):
       return repr(e)
   return "Wrong HTTP method"
 
-@app.route('/block/<blockhash>/tx/<txhash>', methods=['GET'])
-def getTx(blockhash,txhash):
+@app.route('/blocktxsearch', methods=['GET']) #DONE
+def getTx():
   if request.method == 'GET':
     try:
+      blockhash = request.args.get('blockhash')
+      txhash = request.args.get('txhash')
       block = get_blockchain().get_block_by_hash(blockhash)
       if block == None:
-        return repr("Error: No block found with this hash")
+        return render_template('blocksearch.html',response = repr("Error: No block found with this hash"))
       else:
         tx = block.get_tx_by_hash(txhash)
         if tx == None:
           return repr("Error: No tx found with this hash")
         else:
-          return Response(json.dumps(tx.get_dict()), mimetype='text/json')
+          return render_template('blocksearch.html', response = json.dumps(tx.get_dict()), mimetype='text/json')
     except Exception as e:
       logging.error(e,exc_info=True)
       return repr(e)
   return "Wrong HTTP method"
 
 
-@app.route('/wallet/<public_key>')
-def get_balance(public_key):
-  print(public_key)
-  balance = 0
-
+@app.route('/balance', methods=['POST']) #DONE
+def get_balance():
   try:
+    logging.info('HERE')
+    public_key = request.form.get("public_key_input")
+    print(public_key)
+    balance = 0
     with open("blockchain.json", "r") as save_file:    
       data = json.load(save_file)
       print(len(data["blocks"]))
@@ -109,8 +119,13 @@ def get_balance(public_key):
           for utxo in transaction['utxos']:
             if public_key in utxo['public_key']:
               balance += utxo['message']
+      if balance ==0:
+        return render_template('balance.html',bal="You have no balance")
+      else:
+        return render_template('balance.html', bal=balance)
+
   except: raise Exception('The blockchain does not exsist yet')
-  return str(balance)
+
 
 
 

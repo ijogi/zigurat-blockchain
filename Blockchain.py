@@ -96,7 +96,13 @@ class Blockchain:
         return json.dumps({"blocks": [block.get_dict() for block in self.blocks]})
 
     def get_blockhashes_json(self):
-        return json.dumps({"blocks": [block.get_hash() for block in self.blocks]})
+        return {"blocks": [block.get_hash() for block in self.blocks]}
+
+    def get_blockhashes_list(self): #return block hashes as a list
+        block_hashes =[]
+        for block in self.blocks:
+            block_hashes.append(block.get_hash())
+        return block_hashes
 
     def get_block_by_hash(self, hash):
         for block in self.blocks:
@@ -118,3 +124,12 @@ class Blockchain:
                         transactions=utilities.serialize_transactions(x["transactions"] if "transactions" in x else []),
                     ) for x in blocks["blocks"]
                 ]
+
+    def is_public_key_in_blockchain(self, public_key):
+        for block in self.blocks:
+            for tx in block.transactions:
+                counter = 0
+                for pk in tx.receiver_public_keys:
+                    if pk in public_key:
+                        return True
+        return False

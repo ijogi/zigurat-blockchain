@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+    <head>
+        <title>Welcome to ZigChain</title>
+        <link rel="stylesheet" type="text/css" href="static/styles/style.css">
+    </head>
+
+    <body>
+
+        <img class="image" src="bg-3.jpg" alt="">
+        <div class="login-boxx">
+            <h2>Welcome to ZigChain</h2>
+
+            <div class="public-key-box"> <!--Check balance using Pub Key-->
+                <h2>Login</h2>
+                <form action="/balance" method = "POST">
+                    <label class="public-key"> Public Key</label>
+                    <input class="login-input" type="text" name="public_key_input" value="">
+                    <input type="submit">
+
+                </form>
+
+            </div>
+
+
+
+            <div class="your-balance">
+                <h2>Balance:</h2>
+
+            </div>
+
+            <form action = "blocktxsearch" method = "GET">
+                <div class="block-trx-hash-search"> <!--Searching for Block Hash and Tx Hash-->
+                    <div>
+
+                        <input class="block-hash-input" type="text" name="blockhash" required="">
+                        <label class="block-hash-label">Block Hash</label>
+                    </div>
+
+                    <div>
+                        <input class="trx-hash-input" type="text" name="txhash" required="">
+                        <label class="trx-hash-label">Transaction Hash</label>
+                    </div>
+                    <input type="submit" value="Search">
+                </div>
+            </form>
+
+            <form action ="blockhashsearch" method="GET">
+                <br>
+                <br>
+                <div class="left-corner" style="float:left;"> <!-- CENTRAL BOX -->
+                    <div class="Trxx-box">
+                        <br>
+                        <br>
+                        <input class="block" type="text" name="blockhash" required="">
+                        <label class="block">Search for a block hash</label>
+                        <input type="Submit">
+                    </div>
+                </div>
+
+            </form>
+            <form action="/block" method="GET">
+
+                <div class="right-corner" style="float:right;">
+                    <div class="Trxx-box">
+                        <label>Block Explorer</label>
+                        <br><br><br><br><br>
+
+                        <input type="Submit" value ="Search">
+
+                    </div>
+
+                </div>
+            </form>
+
+
+        </div>
+
+
+        <div class="login-box"> <!--Send Transaction Input -->
+            <h2>Send a transaction</h2>
+            <form action="/send" method="POST">
+                <div class="Trx-box">
+                    <input type="text" name="receiver_public_key" required="">
+                    <label>Public Key</label>
+                </div>
+
+                <div class="Trx-box">
+                    <input type="number" name="amount_to_send" required="">
+                    <label>Amount</label>
+                </div>
+
+                <input type = "submit" value = "Go">
+
+
+            </form>
+        </div>
+    </body>
+
+</html>
+

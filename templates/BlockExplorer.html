@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Block Explorer</title>
+    <link rel="stylesheet" type="text/css" href="static/styles/style.css">
+</head>
+<body>
+    <h2 class="title">BLOCK EXPLORER</h2>
+    <ol>
+    {% for hash in returned_blockhashes['blocks'] %}
+
+        <li>{{hash}}</li>
+
+    {% endfor %}
+    </ol>
+</body>
+</html>

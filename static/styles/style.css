@@ -1,0 +1,766 @@
+html {
+    height: 100%;
+  }
+
+
+
+  .image{
+    background-image: url("bg-3.jpg");
+    background-size: 100%;
+    background-repeat: no-repeat;
+    width: 1850px;
+    height: 100vh;
+
+  }
+  body {
+    margin:0;
+    padding:0;
+    font-family: sans-serif;
+    background: linear-gradient(#141e30, #243b55);
+  }
+
+  h2.title {
+    color:#03e9f4;
+  }
+
+  .label {
+    color: white;
+    padding: 8px;
+  }
+
+
+
+  
+.public-key-box{
+
+  position: absolute;
+  top: 50%;
+  left: -30%;
+  height: 450px;
+  width: 350px;
+  padding: 30px;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0,0,0,.6);
+  border-radius: 10px;
+  display: inline-block;
+}
+
+.block-trx-hash-search{
+
+  position: absolute;
+  top: 89%;
+  left: 130%;
+  height: 800px;
+  width: 350px;
+  padding: 30px;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0,0,0,.6);
+  border-radius: 10px;
+  display: inline-block;
+
+}
+
+.block-hash-input{
+
+  
+  width: 80%;                           /*drezhi xaty publickey w amount */
+  padding: 7px 0px;                       /*duri xatakan la tab'y nuisnawa */
+  font-size: 16px;
+  margin-top: 120px;
+  color: #fff;
+  margin-bottom: 50px;
+  margin-left: 10px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+}
+
+.block-hash-label {
+
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  padding: 100px 0;
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: .5s;
+  margin-left: 35px;
+  margin-top: 32px;
+}
+
+.trx-hash-label{
+
+  
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  padding: 100px 0;
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: .5s;
+  margin-left: 35px;
+  margin-top: 235px;
+}
+.trx-hash-input{
+
+  
+  width: 80%;                           /*drezhi xaty publickey w amount */
+  padding: 7px 0px;                       /*duri xatakan la tab'y nuisnawa */
+  font-size: 16px;
+  margin-top: 120px;
+  color: #fff;
+  margin-bottom: 50px;
+  margin-left: 10px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+}
+
+.block-trx-hash-search input:focus ~ label,
+  .block-trx-hash-search input:valid ~ label {
+    top: -10px;
+    left: 0;
+    color: #03e9f4;
+    font-size: 12px;
+  }
+
+
+
+
+.your-balance{
+
+  position: absolute;
+  top: 145%;
+  left: -30%;
+  height: 290px;
+  width: 350px;
+  padding: 30px;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0,0,0,.6);
+  border-radius: 10px;
+  display: inline-block;
+}
+
+.your-balance h2{
+  margin: 0 0 30px;  /*barzw nzmi trx box */
+    padding: 10px;
+    color: #03e9f4;
+    text-align: center;
+
+}
+
+
+.your-balance input{
+
+  
+  width: 80%;                           /*drezhi xaty publickey w amount */
+  padding: 0px -0px;                       /*duri xatakan la tab'y nuisnawa */
+  font-size: 16px;
+  margin-top: -10px;
+  color: #fff;
+  margin-bottom: 150px;
+  margin-left: 10px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+}
+.login-boxx{
+
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    height: 450px;
+    width: 800px;
+    padding: 40px;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,.5);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0,0,0,.6);
+    border-radius: 10px;
+}
+
+
+
+
+.login-boxx h2{
+    margin: 0 0 20px;  /*barzw nzmi trx box */
+    padding: 10;
+    color: #03e9f4;
+    text-align: center;
+}
+
+
+.public-key-box h2{
+
+ margin: 0 0 20px;  /*barzw nzmi trx box */
+    padding: 0;
+    color: #03e9f4;
+    text-align: center;
+
+}
+
+.balance{
+    color: #03e9f4;
+    margin-left: 90px;
+    margin-top: 200px;
+    text-align: right;
+    padding-right: 700px;
+    display: block;
+
+}
+
+
+.balance-amount{
+
+  margin-left: 20px;
+}
+
+
+.login-boxx .Trxx-box {
+    position: relative;
+  }
+
+  .left-corner{
+    display: inline-block;
+    margin-left: 70px;
+
+  }
+
+  .left-corner{
+    display: inline-block;
+    padding-right: 100px;
+    margin-top: 150px;
+
+  }
+
+  .right-corner{
+    display: inline-block;
+    padding-right: 100px;
+    margin-top: 70px;
+
+  }
+  
+.right-corner label{
+
+  position: absolute;
+  top: 10px;                    /*duri nusin la xatakayawa */
+  left: 0;
+  padding: -15px 0px;
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: .5s;
+}
+
+
+.login-boxx .Trxx-box input{
+
+
+    width: 120%;                           /*drezhi xaty publickey w amount */
+    padding: 10px 0px;                       /*duri xatakan la tab'y nuisnawa */
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 100px;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    background: transparent;
+}
+
+
+.public-key-box input {
+
+  width: 80%;                           /*drezhi xaty publickey w amount */
+  padding: 10px 0px;               
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 50px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+  margin-top: 90px;
+  margin-left: 20px;
+}
+
+/*saireki ama bkarawa */
+.login-boxx .Trxx-box label{
+
+    position: absolute;
+    top: -12px;                    /*duri nusin la xatakayawa */
+    left: 0;
+    padding: -15px 0px;
+    font-size: 16px;
+    color: #fff;
+    pointer-events: none;
+    transition: .5s;
+}
+
+
+.public-key-box label{
+
+  position: absolute;
+  top: 130px;
+  left: 50px;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: .5s;
+}
+
+.login-boxx .Trxx-box input:focus ~ label,
+  .login-boxx .Trx-boxx input:valid ~ label {
+    top: -10px;
+    left: 0;
+    color: #03e9f4;
+    font-size: 12px;
+  }
+
+
+.public-key-box input:focus ~ label{
+
+  top: 125px;
+  left: -10;
+  color: #03e9f4;
+  font-size: 12px;
+}
+
+  .login-box {
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    height: 295px;
+    width: 800px;
+    padding: 50px;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,.5);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0,0,0,.6);
+    border-radius: 10px;
+  }
+  
+  
+  .login-box h2 {
+    margin: 0 0 -15px;  /*barzw nzmi trx box */
+    padding: 0;
+    color: #03e9f4;
+    text-align: center;
+  }
+  
+  .login-box .Trx-box {
+    position: relative;
+  }
+
+
+  .your-balance input{
+
+    width: 77%;                           /*drezhi xaty publickey w amount */
+    padding: 30px 0px;               
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 30px;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    background: transparent;
+    margin-left: 28px;
+  }
+  
+  .login-box .Trx-box input {
+    width: 79%;                           /*drezhi xaty publickey w amount */
+    padding: 17px 0;               
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 30px;
+    margin-left: 10px;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    background: transparent;
+  }
+  .login-box .Trx-box label {
+    position: absolute;
+    top:0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    pointer-events: none;
+    transition: .5s;
+    margin-left: 10px;
+  }
+  
+
+
+  /* amount w publickey*/
+  .login-box .Trx-box input:focus ~ label,
+  .login-box .Trx-box input:valid ~ label {
+    top: -20px;
+    left: 0;
+    color: #03e9f4;
+    font-size: 12px;
+  }
+  
+
+
+/*______________________________________________________________________________*/
+
+
+
+  .login-box form a {             /*ama paywandi ba send'awa haya*/
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    color: #03e9f4;
+    font-size: 14px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin-top: 40px;
+    letter-spacing: 4px
+  }
+  
+  .login-box a:hover {
+    background: #03e9f4;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #03e9f4,
+                0 0 25px #03e9f4,
+                0 0 50px #03e9f4,
+                0 0 100px #03e9f4;
+  }
+  
+  .login-box a span {
+    position: absolute;
+    display: block;
+  }
+  
+
+
+
+
+  /*animation button*/
+  .login-box a span:nth-child(1) {
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #03e9f4);
+    animation: btn-anim1 1s linear infinite;
+  }
+  
+  @keyframes btn-anim1 {
+    0% {
+      left: -100%;
+    }
+    50%,100% {
+      left: 100%;
+    }
+  }
+  
+  .login-box a span:nth-child(2) {
+    top: -100%;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, #03e9f4);
+    animation: btn-anim2 1s linear infinite;
+    animation-delay: .25s
+  }
+  
+  @keyframes btn-anim2 {
+    0% {
+      top: -100%;
+    }
+    50%,100% {
+      top: 100%;
+    }
+  }
+  
+  .login-box a span:nth-child(3) {
+    bottom: 0;
+    right: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(270deg, transparent, #03e9f4);
+    animation: btn-anim3 1s linear infinite;
+    animation-delay: .5s
+  }
+  
+  @keyframes btn-anim3 {
+    0% {
+      right: -100%;
+    }
+    50%,100% {
+      right: 100%;
+    }
+  }
+  
+  .login-box a span:nth-child(4) {
+    bottom: -100%;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(360deg, transparent, #03e9f4);
+    animation: btn-anim4 1s linear infinite;
+    animation-delay: .75s
+  }
+  
+  @keyframes btn-anim4 {
+    0% {
+      bottom: -100%;
+    }
+    50%,100% {
+      bottom: 100%;
+    }
+  }
+  
+
+
+
+
+
+  /*-----------------------------------------------------------------*/
+
+  
+
+
+
+  .public-key-box a {             /*ama paywandi ba send'awa haya*/
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    color: #03e9f4;
+    font-size: 14px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin-top: 40px;
+    letter-spacing: 4px
+  }
+  
+  .public-key-box a:hover {
+    background: #03e9f4;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #03e9f4,
+                0 0 25px #03e9f4,
+                0 0 50px #03e9f4,
+                0 0 100px #03e9f4;
+  }
+  
+  .public-key-box a span {
+    position: absolute;
+    display: block;
+  }
+  
+
+
+
+
+  /*animation button*/
+  .public-key-box a span:nth-child(1) {
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #03e9f4);
+    animation: btn-anim1 1s linear infinite;
+  }
+  
+  @keyframes btn-anim1 {
+    0% {
+      left: -100%;
+    }
+    50%,100% {
+      left: 100%;
+    }
+  }
+  
+  .public-key-box a span:nth-child(2) {
+    top: -100%;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, #03e9f4);
+    animation: btn-anim2 1s linear infinite;
+    animation-delay: .25s
+  }
+  
+  @keyframes btn-anim2 {
+    0% {
+      top: -100%;
+    }
+    50%,100% {
+      top: 100%;
+    }
+  }
+  
+  .public-key-box a span:nth-child(3) {
+    bottom: 0;
+    right: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(270deg, transparent, #03e9f4);
+    animation: btn-anim3 1s linear infinite;
+    animation-delay: .5s
+  }
+  
+  @keyframes btn-anim3 {
+    0% {
+      right: -100%;
+    }
+    50%,100% {
+      right: 100%;
+    }
+  }
+  
+  .public-key-box span:nth-child(4) {
+    bottom: -100%;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(360deg, transparent, #03e9f4);
+    animation: btn-anim4 1s linear infinite;
+    animation-delay: .75s
+  }
+  
+  @keyframes btn-anim4 {
+    0% {
+      bottom: -100%;
+    }
+    50%,100% {
+      bottom: 100%;
+    }
+  }
+  
+/*------------------------------------------------------------------------------*/
+
+
+
+
+
+.block-trx-hash-search a{             /*ama paywandi ba send'awa haya*/
+  position: relative;
+  display: inline-block;
+  padding: 10px 20px;
+  color: #03e9f4;
+  font-size: 14px;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  transition: .5s;
+  margin-top: 140px;
+  letter-spacing: 4px
+}
+
+.block-trx-hash-search a:hover {
+  background: #03e9f4;
+  color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px #03e9f4,
+              0 0 25px #03e9f4,
+              0 0 50px #03e9f4,
+              0 0 100px #03e9f4;
+}
+
+.block-trx-hash-search a span {
+  position: absolute;
+  display: inline-block;
+}
+
+
+
+
+
+/*animation button*/
+.block-trx-hash-search a span:nth-child(1) {
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #03e9f4);
+  animation: btn-anim1 1s linear infinite;
+}
+
+@keyframes btn-anim1 {
+  0% {
+    left: -100%;
+  }
+  50%,100% {
+    left: 100%;
+  }
+}
+
+.block-trx-hash-search a span:nth-child(2) {
+  top: -100%;
+  right: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, #03e9f4);
+  animation: btn-anim2 1s linear infinite;
+  animation-delay: .25s
+}
+
+@keyframes btn-anim2 {
+  0% {
+    top: -100%;
+  }
+  50%,100% {
+    top: 100%;
+  }
+}
+
+.block-trx-hash-search a span:nth-child(3) {
+  bottom: 0;
+  right: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(270deg, transparent, #03e9f4);
+  animation: btn-anim3 1s linear infinite;
+  animation-delay: .5s
+}
+
+@keyframes btn-anim3 {
+  0% {
+    right: -100%;
+  }
+  50%,100% {
+    right: 100%;
+  }
+}
+
+.block-trx-hash-search span:nth-child(4) {
+  bottom: -100%;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(360deg, transparent, #03e9f4);
+  animation: btn-anim4 1s linear infinite;
+  animation-delay: .75s
+}
+
+@keyframes btn-anim4 {
+  0% {
+    bottom: -100%;
+  }
+  50%,100% {
+    bottom: 100%;
+  }
+}
+
+  

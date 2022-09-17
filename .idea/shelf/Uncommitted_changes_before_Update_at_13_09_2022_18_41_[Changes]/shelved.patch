@@ -1,0 +1,118 @@
+Index: Blockchain.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import json\r\nimport os\r\nimport hashing\r\nimport utilities\r\nfrom Block import Block\r\nfrom CONFIG import mining_target\r\nfrom Genesis import genesis_coinbase\r\nfrom Transaction import Transaction\r\nfrom UTXO import UTXO\r\n\r\nthe_blockchain = None\r\n\r\n\r\ndef get_blockchain():\r\n    global the_blockchain\r\n    # This is commented out because we should always read from file, as we cannot trust the memory in Multiprocess-Environment\r\n    # if the_blockchain == None:\r\n    the_blockchain = Blockchain([])\r\n    # Can be used to initialize the blockchains from the JSON file\r\n    the_blockchain.read_from_blockchain()\r\n    return the_blockchain\r\n\r\n\r\nclass Blockchain:\r\n    def __init__(self, blocks):\r\n        self.blocks = blocks if len(blocks) > 1 else [Block(\"ZEvMflZDcwQJmarInnYi88px+6HZcv2Uoxw7+/JOOTg=\",\r\n                                                            [genesis_coinbase()], 0)]\r\n\r\n    def insert_block(self, block):\r\n        if not isinstance(block, Block):\r\n            return False\r\n        for tx in block.transactions:\r\n            if not tx.is_valid():\r\n                return False\r\n            if isinstance(tx, Transaction):\r\n                for utxo in tx.utxos:\r\n                    if not self.is_valid_UTXO(utxo):\r\n                        return False\r\n        if not self.check_agains_target(block.get_hash()):\r\n            return False\r\n        self.blocks.append(block)\r\n        self.write_to_blockchain()\r\n        return True\r\n\r\n    def check_agains_target(self, hash_string):\r\n        hex = hashing.string_to_hex(hash_string)\r\n        for i in range(1, mining_target+1):\r\n            if not hex[i] == \"0\":\r\n                return False\r\n        return True\r\n\r\n    def get_utxos(self, public_key):\r\n        utxos = []\r\n        for block in self.blocks:\r\n            for tx in block.transactions:\r\n                counter = 0\r\n                for pk in tx.receiver_public_keys:\r\n                    if pk in public_key:\r\n                        utxo = UTXO(tx.get_hash(), public_key,\r\n                                    tx.messages[counter])\r\n                        utxos.append(utxo)\r\n                    counter = counter + 1\r\n        return utxos\r\n\r\n    def get_topmost_block(self):\r\n        return self.blocks[len(self.blocks)-1]\r\n\r\n    def is_valid_UTXO(self, UTXO):\r\n        valid = False\r\n        # blocks = self.read_from_blockchain()\r\n        blocks = self.blocks\r\n        #find possible UTXO on Blockchain\r\n        for block in blocks:\r\n            # for tx in block[\"transactions\"]:\r\n            for tx in block.transactions:\r\n                if tx.get_hash() == UTXO.tx_hash:\r\n                    counter = 0\r\n                    for pk in tx.receiver_public_keys:\r\n                        if pk in UTXO.public_key:\r\n                            if UTXO.message == tx.messages[counter]:\r\n                                valid = True\r\n                        counter = counter + 1\r\n        if valid == False:\r\n            return False\r\n        #check double_spending\r\n        for block in blocks:\r\n            for tx in block.transactions:\r\n                if isinstance(tx, Transaction):\r\n                    for tx_utxo in tx.utxos:\r\n                        if tx_utxo.get_hash() != UTXO.get_hash():\r\n                            print(\"Breaks here\")\r\n                            return False\r\n        return True\r\n\r\n    def get_json(self):\r\n        return json.dumps({\"blocks\": [block.get_dict() for block in self.blocks]})\r\n\r\n    def get_blockhashes_json(self):\r\n        return json.dumps({\"blocks\": [block.get_hash() for block in self.blocks]})\r\n\r\n    def get_block_by_hash(self, hash):\r\n        for block in self.blocks:\r\n            if block.get_hash() == hash:\r\n                return block\r\n                \r\n    def write_to_blockchain(self):\r\n        with open(\"blockchain.json\", \"w\") as save_file:\r\n            save_file.write(self.get_json())\r\n\r\n    def read_from_blockchain(self):\r\n        with open(\"blockchain.json\", \"r\") as save_file:\r\n            if os.stat(\"blockchain.json\").st_size != 0:\r\n                blocks = json.load(save_file)\r\n                self.blocks = [\r\n                    Block(\r\n                        hash_previous_block=x[\"hash_previous_block\"],\r\n                        nonce=x[\"nonce\"],\r\n                        transactions=utilities.serialize_transactions(x[\"transactions\"] if \"transactions\" in x else []),\r\n                    ) for x in blocks[\"blocks\"]\r\n                ]\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Blockchain.py b/Blockchain.py
+--- a/Blockchain.py	(revision 8c0612f36a2da7d5e5563a974beaccd1e1871c28)
++++ b/Blockchain.py	(date 1663089467384)
+@@ -96,7 +96,13 @@
+         return json.dumps({"blocks": [block.get_dict() for block in self.blocks]})
+ 
+     def get_blockhashes_json(self):
+-        return json.dumps({"blocks": [block.get_hash() for block in self.blocks]})
++        return {"blocks": [block.get_hash() for block in self.blocks]}
++
++    def get_blockhashes_list(self): #return block hashes as a list
++        block_hashes =[]
++        for block in self.blocks:
++            block_hashes.append(block.get_hash())
++        return block_hashes
+ 
+     def get_block_by_hash(self, hash):
+         for block in self.blocks:
+@@ -118,3 +124,12 @@
+                         transactions=utilities.serialize_transactions(x["transactions"] if "transactions" in x else []),
+                     ) for x in blocks["blocks"]
+                 ]
++
++    def is_public_key_in_blockchain(self, public_key):
++        for block in self.blocks:
++            for tx in block.transactions:
++                counter = 0
++                for pk in tx.receiver_public_keys:
++                    if pk in public_key:
++                        return True
++        return False
+Index: Server.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import flask\r\nimport logging\r\nimport json\r\nfrom flask import request, Response, render_template\r\nfrom multiprocessing import Process\r\nfrom Blockchain import get_blockchain\r\n\r\nfrom Wallet import Wallet\r\nfrom Miner import Miner\r\n\r\napp = flask.Flask(__name__)  \r\n\r\n# @app.route('/mine', methods=['POST'])\r\n# def mine():\r\n#   if request.method == 'POST':\r\n#     global p\r\n#     wallet = Wallet()\r\n#     p = Process(target=Miner, args=(wallet.public_key,))\r\n#     p.start()\r\n#     return \"Mining\"\r\n#   return \"Wrong HTTP method\"\r\n\r\n@app.route('/')\r\ndef start():\r\n  return render_template('WalletUIDummy.html')\r\n\r\n@app.route('/send', methods=['POST'])\r\ndef send():\r\n  if request.method == 'POST':\r\n    try:\r\n      wallet = Wallet()\r\n      wallet.send_money([wallet.public_key], [int(request.form['amount'])])\r\n      result = json.dumps(get_blockchain().get_topmost_block().get_dict())\r\n      return Response(result, mimetype='text/json')\r\n    except Exception as e:\r\n      logging.error(e,exc_info=True)\r\n      return repr(e)\r\n  return \"Wrong HTTP method\"\r\n\r\n@app.route('/block', methods=['GET'])\r\ndef getBlocks():\r\n  if request.method == 'GET':\r\n    try:\r\n      return Response(get_blockchain().get_blockhashes_json(), mimetype='text/json')\r\n    except Exception as e:\r\n      logging.error(e,exc_info=True)\r\n      return repr(e)\r\n  return \"Wrong HTTP method\"\r\n\r\n@app.route('/block/<blockhash>', methods=['GET'])\r\ndef getBlock(blockhash):\r\n  if request.method == 'GET':\r\n    try:\r\n      block = get_blockchain().get_block_by_hash(blockhash)\r\n      if block == None:\r\n        return repr(\"Error: No block found with this hash\")\r\n      else:\r\n        return Response(json.dumps(block.get_dict()), mimetype='text/json')\r\n    except Exception as e:\r\n      logging.error(e,exc_info=True)\r\n      return repr(e)\r\n  return \"Wrong HTTP method\"\r\n\r\n@app.route('/block/<blockhash>/tx', methods=['GET'])\r\ndef getTxs(blockhash):\r\n  if request.method == 'GET':\r\n    try:\r\n      block = get_blockchain().get_block_by_hash(blockhash)\r\n      if block == None:\r\n        return repr(\"Error: No block found with this hash\")\r\n      else:\r\n        return Response(json.dumps(block.get_transactions()), mimetype='text/json')\r\n    except Exception as e:\r\n      logging.error(e,exc_info=True)\r\n      return repr(e)\r\n  return \"Wrong HTTP method\"\r\n\r\n@app.route('/block/<blockhash>/tx/<txhash>', methods=['GET'])\r\ndef getTx(blockhash,txhash):\r\n  if request.method == 'GET':\r\n    try:\r\n      block = get_blockchain().get_block_by_hash(blockhash)\r\n      if block == None:\r\n        return repr(\"Error: No block found with this hash\")\r\n      else:\r\n        tx = block.get_tx_by_hash(txhash)\r\n        if tx == None:\r\n          return repr(\"Error: No tx found with this hash\")\r\n        else:\r\n          return Response(json.dumps(tx.get_dict()), mimetype='text/json')\r\n    except Exception as e:\r\n      logging.error(e,exc_info=True)\r\n      return repr(e)\r\n  return \"Wrong HTTP method\"\r\n\r\n\r\n@app.route('/wallet/<public_key>')\r\ndef get_balance(public_key):\r\n  print(public_key)\r\n  balance = 0\r\n\r\n  try:\r\n    with open(\"blockchain.json\", \"r\") as save_file:    \r\n      data = json.load(save_file)\r\n      print(len(data[\"blocks\"]))\r\n\r\n      for block in data[\"blocks\"]:\r\n        for transaction in block['transactions']:\r\n          for utxo in transaction['utxos']:\r\n            if public_key in utxo['public_key']:\r\n              balance += utxo['message']\r\n  except: raise Exception('The blockchain does not exsist yet, you dumm fuck') \r\n  return str(balance)\r\n\r\n\r\n\r\ndef init_server():\r\n  logging.basicConfig(level=logging.INFO)\r\n  logging.info(\"Team 4 Blockchain starting up\")\r\n  wallet = Wallet()\r\n  global p\r\n  p = Process(target=Miner, args=(wallet.public_key,))\r\n  p.start()\r\n\r\nif __name__ == '__main__':\r\n  init_server()\r\n  app.run(host='0.0.0.0', port=8100, threaded=True, debug=True, use_reloader=False)\r\n  \r\n\r\n\r\n  
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Server.py b/Server.py
+--- a/Server.py	(revision 8c0612f36a2da7d5e5563a974beaccd1e1871c28)
++++ b/Server.py	(date 1663090136820)
+@@ -41,7 +41,8 @@
+ def getBlocks():
+   if request.method == 'GET':
+     try:
+-      return Response(get_blockchain().get_blockhashes_json(), mimetype='text/json')
++      returned_blocks = get_blockchain().get_blockhashes_json()
++      return render_template('BlockExplorer.html', returned_blockhashes=returned_blocks)
+     except Exception as e:
+       logging.error(e,exc_info=True)
+       return repr(e)
+@@ -109,8 +110,11 @@
+           for utxo in transaction['utxos']:
+             if public_key in utxo['public_key']:
+               balance += utxo['message']
+-  except: raise Exception('The blockchain does not exsist yet, you dumm fuck') 
+-  return str(balance)
++      return render_template('PublicKeyCheck.html', balance=int(balance))
++    if balance == 0:
++      return "Public key has not sent or received anything"
++  except: raise Exception('The blockchain does not exist yet')
++
+ 
+ 
+ 
+Index: templates/WalletUIDummy.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <title>Dummy Wallet UI</title> #https://www.digitalocean.com/community/tutorials/how-to-use-templates-in-a-flask-application\r\n</head>\r\n<body>\r\n    <form action = \"/send\" method=\"POST\">\r\n        <p> Please enter a public address and amount of BTC</p>\r\n        <input type=\"text\" placeholder=\"Public Address\" name=\"address\">\r\n        <input type=\"number\" placeholder=\"Amount of BTC\" name=\"amount\">\r\n        <input type = \"submit\" value = \"Go\">\r\n    </form>\r\n\r\n\r\n    <h2>BLOCK EXPLORER</h2>\r\n    <p>\r\n        {{blocks_to_return}}\r\n    </p>\r\n</body>\r\n</html>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/WalletUIDummy.html b/templates/WalletUIDummy.html
+--- a/templates/WalletUIDummy.html	(revision 8c0612f36a2da7d5e5563a974beaccd1e1871c28)
++++ b/templates/WalletUIDummy.html	(date 1663014371714)
+@@ -12,10 +12,9 @@
+         <input type = "submit" value = "Go">
+     </form>
+ 
+-
+     <h2>BLOCK EXPLORER</h2>
+-    <p>
+-        {{blocks_to_return}}
+-    </p>
++    <form action = "/block" method="GET">
++        <input type = "submit" value = "Go">
++    </form>
+ </body>
+ </html>
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"99f6a330-9bd9-482d-a396-0dfd6e1bb76b\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/Server.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Server.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"HTML File\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"MarkdownSettingsMigration\">\r\n    <option name=\"stateVersion\" value=\"1\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"2EUYVmANnmYSAvEIq4BMhV3uTJR\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,\r\n    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;\r\n  }\r\n}</component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"99f6a330-9bd9-482d-a396-0dfd6e1bb76b\" name=\"Changes\" comment=\"\" />\r\n      <created>1662651657404</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1662651657404</updated>\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 8c0612f36a2da7d5e5563a974beaccd1e1871c28)
++++ b/.idea/workspace.xml	(date 1662998107602)
+@@ -2,7 +2,10 @@
+ <project version="4">
+   <component name="ChangeListManager">
+     <list default="true" id="99f6a330-9bd9-482d-a396-0dfd6e1bb76b" name="Changes" comment="">
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Blockchain.py" beforeDir="false" afterPath="$PROJECT_DIR$/Blockchain.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/templates/WalletUIDummy.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/WalletUIDummy.html" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
