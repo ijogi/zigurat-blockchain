@@ -82,16 +82,6 @@ class Transaction(UnsignedTransaction):
         }
         return data
 
-    def get_full_dict(self):
-        data = self.get_dict()
-        data["signature"] = self.signature
-        return data
-
-    def get_full_json(self):
-        dictionary = self.get_dict()
-        dictionary.update({"signature": self.signature})
-        return json.dumps(dictionary)
-
     def is_valid(self):
         signature_valid = crypto.verify(self.utxos[0].public_key, self.signature, self.get_hash())
         spent = 0
@@ -101,6 +91,4 @@ class Transaction(UnsignedTransaction):
         for utxo in self.utxos:
             balance = balance + utxo.message
         amount_enough = balance >= spent
-        # print('AMOUNT ENOUGH', amount_enough)
-        # print("SINGATURE IS VALID", signature_valid)
         return signature_valid and amount_enough
