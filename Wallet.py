@@ -1,5 +1,6 @@
 import crypto
 import os, json
+import logging
 from Mempool import get_mempool
 from Transaction import UnsignedTransaction, Transaction
 from Blockchain import get_blockchain
@@ -7,6 +8,7 @@ from UTXO import UTXO
 
 class Wallet:
     def __init__(self):
+        self.log = logging.getLogger("Wallet")
         if os.path.isfile("private_key.json"):
             self.private_key, self.password = self.load_from_file()
         else:
@@ -16,6 +18,7 @@ class Wallet:
         self.public_key = crypto.generate_public_pem_string(self.private_key, self.password)
 
     def send_money(self, receiver_pks, msgs):
+        self.log.info("Sending Money")
         money_to_send = 0
         for m in msgs:
             money_to_send = money_to_send + m
@@ -45,6 +48,7 @@ class Wallet:
         return tx
 
     def insert_to_mempool(self, tx):
+        self.log.info("Insert to Mempool. TX=%s", tx.get_hash())
         get_mempool().insert_transaction(tx)
 
     def save_to_file(self):
